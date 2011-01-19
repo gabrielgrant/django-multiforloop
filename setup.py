@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='django-multiforloop',
-    version='0.1dev',
+    version='0.1.1',
     packages=['multiforloop',],
     author='Gabriel Grant',
     author_email='g@briel.ca',

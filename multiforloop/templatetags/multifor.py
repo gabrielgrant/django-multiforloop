@@ -1,4 +1,7 @@
+from itertools import izip_longest
+
 from django.template.base import Library
+from django.conf import settings
 
 register = Library()
 
@@ -16,8 +19,10 @@ from django.template import TemplateSyntaxError, VariableDoesNotExist
 
 class ForNode(Node):
     child_nodelists = ('nodelist_loop', 'nodelist_empty')
+    zip = zip
 
-    def __init__(self, loopvars_list, sequence_list, is_reversed_list, nodelist_loop, nodelist_empty=None):
+    def __init__(self, loopvars_list, sequence_list, is_reversed_list,
+        nodelist_loop, nodelist_empty=None, zip_func=None):
         self.loopvars_list, self.sequence_list = loopvars_list, sequence_list
         self.is_reversed_list = is_reversed_list
         self.nodelist_loop = nodelist_loop
@@ -25,6 +30,8 @@ class ForNode(Node):
             self.nodelist_empty = NodeList()
         else:
             self.nodelist_empty = nodelist_empty
+        if zip_func is not None:
+	        self.zip = zip_func
 
     def __repr__(self):
         def make_rev_txt(revd):
@@ -73,7 +80,7 @@ class ForNode(Node):
         # Create a forloop value in the context.  We'll update counters on each
         # iteration just below.
         loop_dict = context['forloop'] = {'parentloop': parentloop}
-        for i, items in enumerate(zip(*values_list)):
+        for i, items in enumerate(self.zip(*values_list)):
             # Shortcuts for current loop iteration number.
             loop_dict['counter0'] = i
             loop_dict['counter'] = i+1
@@ -105,9 +112,12 @@ class ForNode(Node):
         context.pop()
         return nodelist.render(context)
 
+class ForLongestNode(ForNode):
+    def zip(self, *args):
+        return izip_longest(fillvalue=settings.TEMPLATE_STRING_IF_INVALID, *args)
 
 #@register.tag(name="for")
-def do_for(parser, token):
+def do_for(parser, token, ForNode=ForNode):
     all_bits = token.contents.split()[1:]
     sections = [s.strip() for s in ' '.join(all_bits).split(';')]
     loopvars_list = []
@@ -147,4 +157,7 @@ def do_for(parser, token):
 
 do_for = register.tag("for", do_for)
 
+def do_for_longest(*args, **kwargs):
+    return do_for(ForNode=ForLongestNode, *args, **kwargs)
 
+do_for_longest = register.tag("for_longest", do_for_longest)

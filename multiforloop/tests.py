@@ -22,3 +22,9 @@ class TagTests(TestCase):
 	def test_for_tag_multi_reversed(self):
 		self.tag_test("{% for x in x_list reversed; y in y_list %}{{ x }}:{{ y }}/{% endfor %}", {"x_list": ('x1', 'x2', 'x3'), "y_list": ('y1', 'y2', 'y3')}, u"x3:y1/x2:y2/x1:y3/")
 
+	def test_for_tag_multi_longest(self):
+		template = "{% for_longest x in x_list; y in y_list %}{{ x }}:{{ y }}/{% endfor %}"
+		context = {"x_list": ('one', 1, 'carrot', 'apple'), "y_list": ('two', 2, 'orange')}
+		output = u"one:two/1:2/carrot:orange/apple:INVALID/"
+		self.tag_test(template, context, output)
+

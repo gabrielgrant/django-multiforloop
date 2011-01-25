@@ -26,6 +26,7 @@ def main():
         ROOT_URLCONF = '',
         DEBUG = True,
 		TEMPLATE_DEBUG = True,
+		TEMPLATE_STRING_IF_INVALID = 'INVALID',
     ) 
     
     #call_command('syncdb')

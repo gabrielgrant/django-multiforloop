@@ -20,6 +20,7 @@ from django.template import TemplateSyntaxError, VariableDoesNotExist
 class ForNode(Node):
     child_nodelists = ('nodelist_loop', 'nodelist_empty')
     zip = zip
+    get_overall_len = min
 
     def __init__(self, loopvars_list, sequence_list, is_reversed_list,
         nodelist_loop, nodelist_empty=None, zip_func=None):
@@ -66,12 +67,12 @@ class ForNode(Node):
                 values = []
             if not hasattr(values, '__len__'):
                 values = list(values)
-            len_values = len(values)
-            if len_values < 1:
-                context.pop()
-                return self.nodelist_empty.render(context)
             vals_list.append(values)
-            len_values_list.append(len_values)
+            len_values_list.append(len(values))
+        len_values = self.get_overall_len(len_values_list)
+        if len_values < 1:
+            context.pop()
+            return self.nodelist_empty.render(context)
         nodelist = NodeList()
         def rev(revd, values):
             return revd and reversed(values) or values
@@ -115,6 +116,7 @@ class ForNode(Node):
 class ForLongestNode(ForNode):
     def zip(self, *args):
         return izip_longest(fillvalue=settings.TEMPLATE_STRING_IF_INVALID, *args)
+    get_overall_len = max
 
 #@register.tag(name="for")
 def do_for(parser, token, ForNode=ForNode):

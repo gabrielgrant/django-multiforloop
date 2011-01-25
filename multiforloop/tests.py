@@ -28,3 +28,15 @@ class TagTests(TestCase):
 		output = u"one:two/1:2/carrot:orange/apple:INVALID/"
 		self.tag_test(template, context, output)
 
+	def test_for_tag_multi_longest_empty(self):
+		template = "{% for_longest x in x_list; y in y_list %}{{ x }}:{{ y }}/{% endfor %}"
+		context = {"x_list": ('one', 1, 'carrot', 'apple')}
+		output = u"one:INVALID/1:INVALID/carrot:INVALID/apple:INVALID/"
+		self.tag_test(template, context, output)
+
+	def test_for_tag_multi_longest_null(self):
+		template = "{% for_longest x in x_list; y in y_list %}{{ x }}:{{ y }}/{% endfor %}"
+		context = {"x_list": ('one', 1, 'carrot', 'apple'), "y_list": ()}
+		output = u"one:INVALID/1:INVALID/carrot:INVALID/apple:INVALID/"
+		self.tag_test(template, context, output)
+

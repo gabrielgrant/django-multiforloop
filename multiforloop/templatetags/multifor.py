@@ -37,11 +37,10 @@ class ForNode(Node):
     def __repr__(self):
         def make_rev_txt(revd):
             return revd and ' reversed' or ''
-        rev_text_list = [make_rev_txt(revd) for revd in self.is_reversed]
+        rev_text_list = [make_rev_txt(revd) for revd in self.is_reversed_list]
         zip_list = zip(self.loopvars_list, self.sequence_list, rev_text_list)
         sections = ['%s in %s%s'%(', '.join(l), s, r) for l, s, r in zip_list]
-        zip(sections, reversed_text_list)
-        return "<For Node: for %s, tail_len: %d%s>" % \
+        return "<For Node: for %s, tail_len: %d>" % \
             ('; '.join(sections), len(self.nodelist_loop))
 
     def __iter__(self):

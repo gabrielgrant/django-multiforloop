@@ -1,10 +1,14 @@
+import django
 
 from django.test import TestCase
 from django.template import Context
 from django.template.engine import Engine
 
 class TagTests(TestCase):
-    engine = Engine(debug=True, string_if_invalid='INVALID', libraries={'multifor': 'multiforloop.templatetags.multifor'})
+    if django.get_version() >= '1.9':
+        engine = Engine(debug=True, string_if_invalid='INVALID', libraries={'multifor': 'multiforloop.templatetags.multifor'})
+    else:
+        engine = Engine(debug=True, string_if_invalid='INVALID')
 
     def tag_test(self, template, context, output):
         t = self.engine.from_string('{% load multifor %}'+template)

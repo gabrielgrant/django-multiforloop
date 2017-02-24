@@ -23,11 +23,16 @@ def main():
                 'NAME': '/tmp/django_login.db',
             }
         },
+        TEMPLATES=[{
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'OPTIONS': {
+                'debug': True,
+                'string_if_invalid': 'INVALID'
+            }
+        }],
         MEDIA_ROOT = '/tmp/django_login_test_media/',
         ROOT_URLCONF = '',
         DEBUG = True,
-        TEMPLATE_DEBUG = True,
-        TEMPLATE_STRING_IF_INVALID = 'INVALID',
     ) 
     django.setup()
     

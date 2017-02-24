@@ -1,4 +1,5 @@
 from itertools import izip_longest
+import functools
 
 from django.conf import settings
 
@@ -29,8 +30,7 @@ class ForNode(Node):
             self.nodelist_empty = NodeList()
         else:
             self.nodelist_empty = nodelist_empty
-        if zip_func is not None:
-	        self.zip = zip_func
+        self.zip_func = zip_func
 
     def __repr__(self):
         def make_rev_txt(revd):
@@ -46,6 +46,9 @@ class ForNode(Node):
             yield node
         for node in self.nodelist_empty:
             yield node
+
+    def _default_zip_func(self, context):
+        return zip
 
     def render(self, context):
         if 'forloop' in context:
@@ -78,7 +81,8 @@ class ForNode(Node):
         # Create a forloop value in the context.  We'll update counters on each
         # iteration just below.
         loop_dict = context['forloop'] = {'parentloop': parentloop}
-        for i, items in enumerate(self.zip(*values_list)):
+        zipper = self.zip_func or self._default_zip_func(context)
+        for i, items in enumerate(zipper(*values_list)):
             # Shortcuts for current loop iteration number.
             loop_dict['counter0'] = i
             loop_dict['counter'] = i+1
@@ -111,8 +115,9 @@ class ForNode(Node):
         return nodelist.render(context)
 
 class ForLongestNode(ForNode):
-    def zip(self, *args):
-        return izip_longest(fillvalue=settings.TEMPLATE_STRING_IF_INVALID, *args)
+    def _default_zip_func(self, context):
+        return functools.partial(izip_longest, fillvalue=context.template.engine.string_if_invalid)
+
     get_overall_len = max
 
 #@register.tag(name="for")

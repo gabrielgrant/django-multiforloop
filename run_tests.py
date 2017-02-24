@@ -1,6 +1,7 @@
 
 # from http://www.travisswicegood.com/2010/01/17/django-virtualenv-pip-and-fabric/
 
+import django
 from django.conf import settings
 from django.core.management import call_command
 
@@ -25,9 +26,10 @@ def main():
         MEDIA_ROOT = '/tmp/django_login_test_media/',
         ROOT_URLCONF = '',
         DEBUG = True,
-		TEMPLATE_DEBUG = True,
-		TEMPLATE_STRING_IF_INVALID = 'INVALID',
+        TEMPLATE_DEBUG = True,
+        TEMPLATE_STRING_IF_INVALID = 'INVALID',
     ) 
+    django.setup()
     
     #call_command('syncdb')
     

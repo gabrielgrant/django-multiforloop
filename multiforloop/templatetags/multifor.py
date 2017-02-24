@@ -1,4 +1,7 @@
-from itertools import izip_longest
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 import functools
 
 from django.conf import settings
@@ -116,7 +119,7 @@ class ForNode(Node):
 
 class ForLongestNode(ForNode):
     def _default_zip_func(self, context):
-        return functools.partial(izip_longest, fillvalue=context.template.engine.string_if_invalid)
+        return functools.partial(zip_longest, fillvalue=context.template.engine.string_if_invalid)
 
     get_overall_len = max
 

@@ -16,23 +16,29 @@ generic views), this can result in a fair bit of unneeded boilerplate code.
 
 Rendering this template
 
+```
     {% load multifor %}
     {% for x in x_list; y in y_list %}
       {{ x }}:{{ y }}
     {% endfor %}
+```
 
 with this context
 
+```
     context = {
         "x_list": ('one', 1, 'carrot'),
         "y_list": ('two', 2, 'orange')
     }
+```
 
 will output
 
+```
     one:two
     1:2
     carrot:orange
+```
 
 The multifor tag library also includes a `for_longest` tag that functions
 similarly to izip_longest from Python's itertools library. Whereas the
@@ -45,42 +51,54 @@ Observe the difference:
 
 Rendering this template
 
+```
     {% load multifor %}
     {% for x in x_list; y in y_list %}
       {{ x }}:{{ y }}
     {% endfor %}
+```
 
 with this context
 
+```
     context = {
         "x_list": ('one', 1, 'carrot'),
         "y_list": ('two', 2)
     }
+```
 
 will output
 
+```
     one:two
     1:2
+```
 
 While rendering this template
 
+```
     {% load multifor %}
     {% for_longest x in x_list; y in y_list %}
       {{ x }}:{{ y }}
     {% endfor %}
+```
 
 with the same context
 
+```
     context = {
         "x_list": ('one', 1, 'carrot'),
         "y_list": ('two', 2)
     }
+```
 
 will output
 
+```
     one:two
     1:2
     carrot:
+```
 
 ## Installation
 

@@ -4,8 +4,10 @@ simultaneously (acting similarly to Python's `zip`).
 
 multiforloop allows this Python idiom to be used in django templates:
 
+```
 for x,y in zip(x_list, y_list):
 	print x,y
+```
 
 Normally, to iterate over multiple lists simultaneously in django templates,
 the lists must be zipped in the view and passed in as an extra context

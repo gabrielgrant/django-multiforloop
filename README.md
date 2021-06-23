@@ -108,3 +108,9 @@ will output
 2. Include 'multiforloop' in your settings.py's list of installed apps
 3. Add `{% load multifor %}` to the top of any templates which use the multiforloop
 
+## Release
+
+```
+python3 setup.py build sdist --verbose
+twine upload dist/django-multiforloop-<LATEST_VERSION>.tar.gz
+```
